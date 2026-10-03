@@ -40,30 +40,30 @@ def api(match_id):
     runs = data['miniscore']['batTeam']['teamScore']
     wickets = data['miniscore']['batTeam']['teamWkts']
     bwlr = data['miniscore']['bowlerStriker']
-    bowler = bwlr['bowlName'].split(" ")[-1]
-    bowler_wickets = bwlr['bowlWkts']
-    bowler_runs = bwlr['bowlRuns']
-    bowler_overs = bwlr['bowlOvs']
-    bowler_maidens = bwlr['bowlMaidens']
-    bowler_eco = bwlr['bowlEcon']
+    bowler_name = bwlr.get("bowlName") or bwlr.get("name") or ""
+    bowler = bowler_name.split(" ")[-1] if bowler_name else ""
+    bowler_wickets = bwlr.get("bowlWkts", bwlr.get("wickets", 0))
+    bowler_runs = bwlr.get("bowlRuns", bwlr.get("runs", 0))
+    bowler_overs = bwlr.get("bowlOvs", bwlr.get("overs", ""))
+    bowler_maidens = bwlr.get("bowlMaidens", bwlr.get("maidens", 0))
+    bowler_eco = bwlr.get("bowlEcon", bwlr.get("economy", 0))
     b1 = data['miniscore']['batsmanStriker']
     b2 = data['miniscore']['batsmanNonStriker']
     t1 = data['matchHeader']['matchTeamInfo'][-1]['bowlingTeamShortName']
     t2 = data['matchHeader']['matchTeamInfo'][-1]['battingTeamShortName']
-    batsman_1 = b1['batName'].split(" ")[-1]
-    batsman_2 = b2['batName'].split(" ")[-1]
-    b1_runs = b1['batRuns']
-    b1_balls = b1['batBalls']
-    b2_runs = b2['batRuns']
-    b2_balls = b2['batBalls']
+    name1 = b1.get("batName") or b1.get("name") or ""
+    name2 = b2.get("batName") or b2.get("name") or ""
+    batsman_1 = name1.split(" ")[-1] if name1 else ""
+    batsman_2 = name2.split(" ")[-1] if name2 else ""
+    b1_runs = b1.get("batRuns", b1.get("runs", 0))
+    b1_balls = b1.get("batBalls", b1.get("balls", 0))
+    b2_runs = b2.get("batRuns", b2.get("runs", 0))
+    b2_balls = b2.get("batBalls", b2.get("balls", 0))
     other_team = t1
     team_playing = t2
     over = data['miniscore']['overs']
     over_recent = data['miniscore']['recentOvsStats'].split("|")[-1]
-    try:
-        target = data['miniscore']['target']
-    except KeyError:
-        target = 0
+    target = mini.get("target", 0) or 0
     if target:
         if runs >= target:
             need_string = f'{team_playing} Won.'
